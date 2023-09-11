@@ -1,7 +1,8 @@
-from .common import Base_noise
+from custom_nodes.cg_custom_core.base import BaseNode
 import comfy.sample
     
-class Hijack(Base_noise):
+class Hijack(BaseNode):
+    CATEGORY = "noise/hijack"
     REQUIRED = {"latent": ("LATENT", {}), 
                 "variation":("INT", {"default": 0, "min": 0, "max": 0xffffffffffffffff}), 
                 "weight": ("FLOAT", {"default": 0.01, "min": 0, "max": 1, "step": 0.01}) }
@@ -18,7 +19,8 @@ class Hijack(Base_noise):
             comfy.sample.prepare_noise = prepare_mixed_noise
         return (latent,)
     
-class UnHijack(Base_noise):
+class UnHijack(BaseNode):
+    CATEGORY = "noise/hijack"
     REQUIRED = {"latent": ("LATENT", {}) }
     RETURN_TYPES = ("LATENT",)
     RETURN_NAMES = ("latent",)
