@@ -1,4 +1,4 @@
-from custom_nodes.cg_custom_core.base import BaseNode, TorchSeedContext
+from custom_nodes.cg_custom_core.base import BaseNode
 import comfy.sample
     
 class Hijack(BaseNode):
