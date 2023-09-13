@@ -1,4 +1,4 @@
-from custom_nodes.cg_custom_core.base import BaseNode
+from custom_nodes.cg_custom_core.base import BaseNode, TorchSeedContext
 import comfy.sample
     
 class Hijack(BaseNode):
@@ -9,13 +9,15 @@ class Hijack(BaseNode):
     OPTIONAL = {"trigger": ("*",{})}
     RETURN_TYPES = ("LATENT",)
     RETURN_NAMES = ("latent",)
-    STOLEN = None
-    def func(self, latent, variation, weight,trigger=None):
-        if Hijack.STOLEN==None:
-            Hijack.STOLEN = comfy.sample.prepare_noise
+    _original_noise_function = None
+    def func(self, latent, variation, weight, trigger=None):
+        if Hijack._original_noise_function==None:
+            Hijack._original_noise_function = comfy.sample.prepare_noise
             def prepare_mixed_noise(latent_image, seed, batch_inds):
-                return Hijack.STOLEN(latent_image, seed, batch_inds) * (1.0-weight) +\
-                    Hijack.STOLEN(latent_image, variation, batch_inds) * (weight) 
+                original_noise = Hijack._original_noise_function(latent_image, seed, batch_inds)
+                with TorchSeedContext(variation):
+                    different_noise = Hijack._original_noise_function(latent_image, variation, batch_inds)
+                return original_noise * (1.0-weight) + different_noise * (weight) 
             comfy.sample.prepare_noise = prepare_mixed_noise
         return (latent,)
     
@@ -25,7 +27,7 @@ class UnHijack(BaseNode):
     RETURN_TYPES = ("LATENT",)
     RETURN_NAMES = ("latent",)
     def func(self,latent):
-        if Hijack.STOLEN:
-            comfy.sample.prepare_noise = Hijack.STOLEN
-            Hijack.STOLEN = None
+        if Hijack._original_noise_function:
+            comfy.sample.prepare_noise = Hijack._original_noise_function
+            Hijack._original_noise_function = None
         return (latent,)
