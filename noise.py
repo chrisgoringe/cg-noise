@@ -5,7 +5,7 @@ class Hijack(BaseNode):
     CATEGORY = "noise/hijack"
     REQUIRED = {"latent": ("LATENT", {}), 
                 "variation":("INT", {"default": 0, "min": 0, "max": 0xffffffffffffffff}), 
-                "weight": ("FLOAT", {"default": 0.01, "min": 0, "max": 1, "step": 0.01}) }
+                "weight": ("FLOAT", {"default": 0.001, "min": 0, "max": 1, "step": 0.001}) }
     OPTIONAL = {"trigger": ("*",{})}
     RETURN_TYPES = ("LATENT",)
     RETURN_NAMES = ("latent",)
