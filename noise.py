@@ -14,9 +14,9 @@ class Hijack(BaseNode):
         if Hijack._original_noise_function==None:
             Hijack._original_noise_function = comfy.sample.prepare_noise
             def prepare_mixed_noise(latent_image, seed, batch_inds):
+                # generate the original noise second, so that the random number generator (which gets seeded) is left in the same state as if we didn't hijack
+                different_noise = Hijack._original_noise_function(latent_image, variation, batch_inds)
                 original_noise = Hijack._original_noise_function(latent_image, seed, batch_inds)
-                with TorchSeedContext(variation):
-                    different_noise = Hijack._original_noise_function(latent_image, variation, batch_inds)
                 return original_noise * (1.0-weight) + different_noise * (weight) 
             comfy.sample.prepare_noise = prepare_mixed_noise
         return (latent,)
