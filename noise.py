@@ -43,3 +43,48 @@ class KSamplerVariations(Variations, KSampler):
     
 class KSamplerAdvancedVariations(Variations, KSamplerAdvanced):
     clazz = KSamplerAdvanced
+
+class Hijack():
+    CATEGORY = "noise"
+    FUNCTION = "func"
+    @classmethod
+    def INPUT_TYPES(cls):
+        return {
+            "required" : {
+                "latent": ("LATENT", {}), 
+                "variation":("INT", {"default": 0, "min": 0, "max": 0xffffffffffffffff}), 
+                "weight": ("FLOAT", {"default": 0.001, "min": 0, "max": 1, "step": 0.001}) 
+            },
+            "optional" : {
+                "trigger": ("*",{})
+            },
+        }
+    RETURN_TYPES = ("LATENT",)
+    RETURN_NAMES = ("latent",)
+    _original_noise_function = None
+    @classmethod
+    def func(cls, latent, variation, weight, trigger=None):
+        if cls._original_noise_function==None:
+            cls._original_noise_function = comfy.sample.prepare_noise
+            comfy.sample.prepare_noise = get_mixed_noise_function(cls._original_noise_function, variation, weight)
+        return (latent,)
+    
+class UnHijack():
+    CATEGORY = "noise"
+    FUNCTION = "func"
+    @classmethod
+    def INPUT_TYPES(cls):
+        return {
+            "required" : {
+                "latent": ("LATENT", {}), 
+            },
+        }
+    RETURN_TYPES = ("LATENT",)
+    RETURN_NAMES = ("latent",)
+
+    @classmethod
+    def func(cls,latent):
+        if Hijack._original_noise_function:
+            comfy.sample.prepare_noise = Hijack._original_noise_function
+            Hijack._original_noise_function = None
+        return (latent,)
