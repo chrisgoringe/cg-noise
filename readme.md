@@ -2,32 +2,44 @@
 
 [Index of all my custom nodes](https://github.com/chrisgoringe/cg-nodes-index)
 
-Here's a simple pair of custom nodes that allows you to generate small variations (a bit like A1111's subseed). They work by hijacking the noise generator used by the KSampler, effectively replacing
+Custom nodes that replace `KSampler` and `KSampler Advanced` and allow you to generate small variations in the initial noise.
 
-```python
-noise = random_based_on(seed)
-```
+Conceptually, `noise = random_based_on(seed)` is replaced with `noise = random_based_on(variation_seed) * x + random_based_on(seed) * (1-x)` for some weight `x`. `x=0` generates an identical image to the normal nodes, small values of `x` generate similar images.
 
-with 
-
-```python
-noise = random_based_on(seed) * (1-x)  +  random_based_on(another_seed) * x
-```
-
-The first node does the hijack (and has parameters to determine the values of `another_seed` and the weight, `x`), and the other node undoes it. They take latent as input and output but they don't actually do anything to it; that's just a good way to make sure they get executed before and after the KSampler.
-
-Here's a simple txt2img workflow and an image you can drop into ComfyUI
-
-|Screenshot|Dropable image|
+|Original|x=0.1|
 |-|-|
-|![screenshot](docs/Screenshot.png)|![screenshot](docs/output.png)|
+|![Original](docs/variation_000.png)|![Variation](docs/variation_010.png)|
 
-And here's one which compares the results with and without variation
+## Usage
 
-|Screenshot|Dropable image|
-|-|-|
-|![screenshot](docs/Screenshot-compare.png) |![screenshot](docs/compare.png)|
+The new nodes are then found under *sampling* as `KSampler with Variations` and `KSampler Advanced with Variations`. Use them just like you use the original KSampler nodes, with
 
-## Trigger? What's that?
+- `seed` is the seed for the original image
+- `control_after_generated` is set to `fixed` by default
+- `variation_seed` is the alternative seed
+- `variation_weight` is the weight - typically quite small (try 0.1)
 
-Maybe you noticed that the Hijack node has an input labelled 'trigger'. This is there in case you need to control when the hijack takes place - so in the case of the second workflow, it's important that the hijack doesn't happen before the first KSampler runs (because - important point - the hijack is global). Plug anything you like into the trigger, and the hijack won't run until the node upstream has finished. So in this case, it ensures the first image is completed before the hijack takes place.
+## Installation
+
+```
+cd [Comfy Install]/custom_nodes
+git clone https://github.com/chrisgoringe/cg-noise.git
+```
+Then restart ComfyUI and reload the webpage.
+
+## Update
+
+```
+cd [Comfy Install]/custom_nodes/cg-noise
+git pull
+```
+Then restart ComfyUI and reload the webpage.
+
+## Example
+
+|||||
+|-|-|-|-|
+|x=0|x=0.005|x=0.01|x=0.02|
+|![Original](docs/variation_000.png)|![x=0.005](docs/variation_005.png)|![x=0.010](docs/variation_010.png)|![x=0.2](docs/variation_020.png)|
+|x=0.1|x=0.25|x=0.5|x=1|
+|![x=0.1](docs/variation_100.png)|![x=0.25](docs/variation_250.png)|![x=05](docs/variation_500.png)|![x=1](docs/variation_1000.png)|
