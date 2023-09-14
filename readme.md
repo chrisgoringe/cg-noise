@@ -12,7 +12,7 @@ Conceptually, `noise = random_based_on(seed)` is replaced with `noise = random_b
 
 ## Usage
 
-One installed, the new nodes are found under *sampling* as `KSampler with Variations` and `KSampler Advanced with Variations`. Use them just like you use the original KSampler nodes, with
+Once installed, the new nodes are then found under *sampling* as `KSampler with Variations` and `KSampler Advanced with Variations` (for use with other KSamplers, see below). Use them just like you use the original KSampler nodes, with
 
 - `seed` is the seed for the original image
 - `control_after_generated` is set to `fixed` by default
@@ -35,6 +35,14 @@ git pull
 ```
 Then restart ComfyUI and reload the webpage.
 
+## Other Ksamplers
+
+If you use a different KSampler, the following will *probably* work (it won't if the KSampler uses a non-standard noise generation routine - in which case raise an issue on the GitHub and I might look at it).
+
+There are two custonm nodes under noise/hijack. Place the `Hijack` node directly before your KSampler, and the `Unhijack` node directly after it. Set *control_after_generate* to *fixed*. Like this, but with your KSampler:
+
+![hijack](docs/hijack.png)
+
 ## Example
 
 |||||
@@ -43,3 +51,9 @@ Then restart ComfyUI and reload the webpage.
 |![Original](docs/variation_000.png)|![x=0.005](docs/variation_005.png)|![x=0.010](docs/variation_010.png)|![x=0.2](docs/variation_020.png)|
 |x=0.1|x=0.25|x=0.5|x=1|
 |![x=0.1](docs/variation_100.png)|![x=0.25](docs/variation_250.png)|![x=05](docs/variation_500.png)|![x=1](docs/variation_1000.png)|
+
+## Change Log
+
+### 15 Sept 2023
+
+- Added hijack nodes

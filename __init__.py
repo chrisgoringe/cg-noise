@@ -3,8 +3,8 @@ from .noise import *
 NODE_CLASS_MAPPINGS = {
     "KSampler with Variations" : KSamplerVariations, 
     "KSampler Advanced with Variations" : KSamplerAdvancedVariations, 
-    #"Hijack" : Hijack, 
-    #"UnHijack" : UnHijack
+    "Hijack" : Hijack, 
+    "UnHijack" : UnHijack,
 }
 
 __all__ = ['NODE_CLASS_MAPPINGS']
