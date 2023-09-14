@@ -12,7 +12,7 @@ Conceptually, `noise = random_based_on(seed)` is replaced with `noise = random_b
 
 ## Usage
 
-The new nodes are then found under *sampling* as `KSampler with Variations` and `KSampler Advanced with Variations`. Use them just like you use the original KSampler nodes, with
+One installed, the new nodes are found under *sampling* as `KSampler with Variations` and `KSampler Advanced with Variations`. Use them just like you use the original KSampler nodes, with
 
 - `seed` is the seed for the original image
 - `control_after_generated` is set to `fixed` by default
