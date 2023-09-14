@@ -1,4 +1,4 @@
-# Noise Hijack
+# KSamplers with variation seed (aka Noise Hijack)
 
 [Index of all my custom nodes](https://github.com/chrisgoringe/cg-nodes-index)
 
