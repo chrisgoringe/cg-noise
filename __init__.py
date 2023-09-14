@@ -1,11 +1,13 @@
-from .noise import *
+from .noise import NODE_CLASS_MAPPINGS as noise_mappings
+from .hijack import NODE_CLASS_MAPPINGS as hijack_mappings
 
-NODE_CLASS_MAPPINGS = {
-    "KSampler with Variations" : KSamplerVariations, 
-    "KSampler Advanced with Variations" : KSamplerAdvancedVariations, 
-    #"Hijack" : Hijack, 
-    #"UnHijack" : UnHijack
-}
+NODE_CLASS_MAPPINGS = {}
+def add_mappings(mappings:dict):
+    for mapping in mappings:
+        NODE_CLASS_MAPPINGS[mapping] = noise_mappings[mapping]
+
+for mappings in (noise_mappings, hijack_mappings):
+    add_mappings(mappings)
 
 __all__ = ['NODE_CLASS_MAPPINGS']
 

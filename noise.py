@@ -19,7 +19,6 @@ def insert_variation_inputs(input_types):
     return input_types    
 
 class Variations():
-    CATEGORY = "sampling"
     FUNCTION = "func"
     clazz = None
     @classmethod
@@ -36,10 +35,15 @@ class Variations():
         comfy.sample.prepare_noise = get_mixed_noise_function(original_noise_function, variation_seed, variation_weight)
         results = getattr(self,self.clazz.FUNCTION)(**kwargs)
         comfy.sample.prepare_noise = original_noise_function
-        return results    
+        return results
     
-class KSamplerVariations(Variations, KSampler):
-    clazz = KSampler
-    
-class KSamplerAdvancedVariations(Variations, KSamplerAdvanced):
-    clazz = KSamplerAdvanced
+def variations_factory(original_class:type, name=None) -> type:
+    name = name or original_class.__name__+"Variations"
+    return type(name, (Variations, original_class), {'clazz':original_class})
+
+NODE_CLASS_MAPPINGS = {
+    "KSampler with Variations" : variations_factory(KSampler), 
+    "KSampler Advanced with Variations" : variations_factory(KSamplerAdvanced), 
+}
+
+
