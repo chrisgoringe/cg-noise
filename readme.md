@@ -1,4 +1,4 @@
-# Noise Hijack
+# KSamplers with variation seed (aka Noise Hijack)
 
 [Index of all my custom nodes](https://github.com/chrisgoringe/cg-nodes-index)
 
@@ -12,7 +12,7 @@ Conceptually, `noise = random_based_on(seed)` is replaced with `noise = random_b
 
 ## Usage
 
-The new nodes are then found under *sampling* as `KSampler with Variations` and `KSampler Advanced with Variations` (for use with other KSamplers, see below). Use them just like you use the original KSampler nodes, with
+Once installed, the new nodes are then found under *sampling* as `KSampler with Variations` and `KSampler Advanced with Variations` (for use with other KSamplers, see below). Use them just like you use the original KSampler nodes, with
 
 - `seed` is the seed for the original image
 - `control_after_generated` is set to `fixed` by default
