@@ -14,12 +14,14 @@ def insert_variation_inputs(input_types):
         required[rkey] = input_types['required'][rkey]
         if rkey=="seed" or rkey=="noise_seed":
             required['variation_seed'] = ("INT", {"min": 0, "max": 0xffffffffffffffff})
-            required['variation_weight'] = ("FLOAT", {"default": 0.001, "min": 0, "max": 1, "step": 0.001})
+            required['variation_weight'] = ("FLOAT", {"default": 0.000, "min": 0, "max": 1, "step": 0.001})
+    if (not 'variation_seed' in required):
+        required['variation_seed'] = ("INT", {"min": 0, "max": 0xffffffffffffffff})
+        required['variation_weight'] = ("FLOAT", {"default": 0.000, "min": 0, "max": 1, "step": 0.001})
     input_types['required'] = required
     return input_types    
 
 class Variations():
-    CATEGORY = "sampling"
     FUNCTION = "func"
     clazz = None
     @classmethod
@@ -36,52 +38,13 @@ class Variations():
         comfy.sample.prepare_noise = get_mixed_noise_function(original_noise_function, variation_seed, variation_weight)
         results = getattr(self,self.clazz.FUNCTION)(**kwargs)
         comfy.sample.prepare_noise = original_noise_function
-        return results    
+        return results
     
-class KSamplerVariations(Variations, KSampler):
-    clazz = KSampler
-    
-class KSamplerAdvancedVariations(Variations, KSamplerAdvanced):
-    clazz = KSamplerAdvanced
+def variations_factory(original_class:type, name=None) -> type:
+    name = name or original_class.__name__+"Variations"
+    return type(name, (Variations, original_class), {'clazz':original_class})
 
-class Hijack():
-    CATEGORY = "noise/hijack"
-    FUNCTION = "func"
-    @classmethod
-    def INPUT_TYPES(cls):
-        return {
-            "required" : {
-                "latent": ("LATENT", {}), 
-                "variation_seed":("INT", {"default": 0, "min": 0, "max": 0xffffffffffffffff}), 
-                "variation_weight": ("FLOAT", {"default": 0.001, "min": 0, "max": 1, "step": 0.001}) 
-            }
-        }
-    RETURN_TYPES = ("LATENT",)
-    RETURN_NAMES = ("latent",)
-    _original_noise_function = None
-    @classmethod
-    def func(cls, latent, variation_seed, variation_weight, trigger=None):
-        if cls._original_noise_function==None:
-            cls._original_noise_function = comfy.sample.prepare_noise
-            comfy.sample.prepare_noise = get_mixed_noise_function(cls._original_noise_function, variation_seed, variation_weight)
-        return (latent,)
-    
-class UnHijack():
-    CATEGORY = "noise/hijack"
-    FUNCTION = "func"
-    @classmethod
-    def INPUT_TYPES(cls):
-        return {
-            "required" : {
-                "latent": ("LATENT", {}), 
-            },
-        }
-    RETURN_TYPES = ("LATENT",)
-    RETURN_NAMES = ("latent",)
-
-    @classmethod
-    def func(cls,latent):
-        if Hijack._original_noise_function:
-            comfy.sample.prepare_noise = Hijack._original_noise_function
-            Hijack._original_noise_function = None
-        return (latent,)
+NODE_CLASS_MAPPINGS = {
+    "KSampler with Variations" : variations_factory(KSampler), 
+    "KSampler Advanced with Variations" : variations_factory(KSamplerAdvanced), 
+}

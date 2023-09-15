@@ -2,7 +2,7 @@
 
 [Index of all my custom nodes](https://github.com/chrisgoringe/cg-nodes-index)
 
-Custom nodes that replace `KSampler` and `KSampler Advanced` and allow you to generate small variations in the initial noise.
+Custom nodes that replace `KSampler` and `KSampler Advanced` (and others - see below) and allow you to generate small variations in the initial noise.
 
 Conceptually, `noise = random_based_on(seed)` is replaced with `noise = random_based_on(variation_seed) * x + random_based_on(seed) * (1-x)` for some weight `x`. `x=0` generates an identical image to the normal nodes, small values of `x` generate similar images.
 
@@ -18,6 +18,15 @@ Once installed, the new nodes are then found under *sampling* as `KSampler with 
 - `control_after_generated` is set to `fixed` by default
 - `variation_seed` is the alternative seed
 - `variation_weight` is the weight - typically quite small (try 0.1)
+
+## Example
+
+|||||
+|-|-|-|-|
+|x=0|x=0.005|x=0.01|x=0.02|
+|![Original](docs/variation_000.png)|![x=0.005](docs/variation_005.png)|![x=0.010](docs/variation_010.png)|![x=0.2](docs/variation_020.png)|
+|x=0.1|x=0.25|x=0.5|x=1|
+|![x=0.1](docs/variation_100.png)|![x=0.25](docs/variation_250.png)|![x=05](docs/variation_500.png)|![x=1](docs/variation_1000.png)|
 
 ## Installation
 
@@ -35,25 +44,31 @@ git pull
 ```
 Then restart ComfyUI and reload the webpage.
 
-## Other Ksamplers
+## Other KSamplers
 
-If you use a different KSampler, the following will *probably* work (it won't if the KSampler uses a non-standard noise generation routine - in which case raise an issue on the GitHub and I might look at it).
+The following custom KSamplers are supported out of the box:
+- Tiny Terra: 
+    - pipeKSampler
+    - pipeKSamplerAdvanced
+    - pipeKSamplerSDXL (partial support - the refiner step doesn't seem to be reproducable at the moment)
 
-There are two custonm nodes under noise/hijack. Place the `Hijack` node directly before your KSampler, and the `Unhijack` node directly after it. Set *control_after_generate* to *fixed*. Like this, but with your KSampler:
+If you use a different KSampler, the following will *probably* work.
+
+There are two custom nodes under noise/hijack. Place the `Hijack` node directly before your KSampler, and the `Unhijack` node directly after it. Set *control_after_generate* to *fixed*. Like this, but with your KSampler:
 
 ![hijack](docs/hijack.png)
 
-## Example
+If this does work, then the KSampler can almost certainly be added to work out of the box. [Raise an issue](https://github.com/chrisgoringe/cg-noise/issues) so I can add it - or just look at `additional_sampler.py` and make the change yourself - PR's welcome! If it doesn't work [raise an issue](https://github.com/chrisgoringe/cg-noise/issues) and I might look at it.
 
-|||||
-|-|-|-|-|
-|x=0|x=0.005|x=0.01|x=0.02|
-|![Original](docs/variation_000.png)|![x=0.005](docs/variation_005.png)|![x=0.010](docs/variation_010.png)|![x=0.2](docs/variation_020.png)|
-|x=0.1|x=0.25|x=0.5|x=1|
-|![x=0.1](docs/variation_100.png)|![x=0.25](docs/variation_250.png)|![x=05](docs/variation_500.png)|![x=1](docs/variation_1000.png)|
+## SDXL Note
+
+If you use the refiner, the noise is added by the first KSampler, so that's where you do the variations. Using the variations node on the second KSampler (where *add_noise* is disabled) doesn't do anything.
 
 ## Change Log
 
 ### 15 Sept 2023
 
 - Added hijack nodes
+- Converted to factory 
+- Added Tiny Terra pipe KSampler (not fully functional for pipeKSamplerSDXL)
+
