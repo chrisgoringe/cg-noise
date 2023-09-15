@@ -19,6 +19,15 @@ Once installed, the new nodes are then found under *sampling* as `KSampler with 
 - `variation_seed` is the alternative seed
 - `variation_weight` is the weight - typically quite small (try 0.1)
 
+## Batch inputs
+
+If the batch size is 1, the node will generate a single image with the specified *variation_weight*.
+
+If the batch size is larger than 1, the node will generate a set of images all based on the same
+original noise. The first image will have *variation_weight* of zero, the second will have *variation_weight* as set in the node, the third will have *variation_weight* of 2x the value set in the node, the fourth will have 3x etc..
+
+![like this](docs/batch.png)
+
 ## Example
 
 |||||
