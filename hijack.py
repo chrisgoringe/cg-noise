@@ -1,4 +1,4 @@
-from noise import get_mixed_noise_function
+from .noise import get_mixed_noise_function
 import comfy.sample
 
 class HijackException(Exception):
