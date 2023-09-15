@@ -48,5 +48,3 @@ NODE_CLASS_MAPPINGS = {
     "KSampler with Variations" : variations_factory(KSampler), 
     "KSampler Advanced with Variations" : variations_factory(KSamplerAdvanced), 
 }
-
-

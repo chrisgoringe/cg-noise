@@ -12,7 +12,7 @@ Conceptually, `noise = random_based_on(seed)` is replaced with `noise = random_b
 
 ## Usage
 
-One installed, the new nodes are found under *sampling* as `KSampler with Variations` and `KSampler Advanced with Variations`. Use them just like you use the original KSampler nodes, with
+Once installed, the new nodes are then found under *sampling* as `KSampler with Variations` and `KSampler Advanced with Variations` (for use with other KSamplers, see below). Use them just like you use the original KSampler nodes, with
 
 - `seed` is the seed for the original image
 - `control_after_generated` is set to `fixed` by default
@@ -64,8 +64,6 @@ If this does work, then the KSampler can almost certainly be added to work out o
 
 If you use the refiner, the noise is added by the first KSampler, so that's where you do the variations. Using the variations node on the second KSampler (where *add_noise* is disabled) doesn't do anything.
 
-
-
 ## Change Log
 
 ### 15 Sept 2023
@@ -73,3 +71,4 @@ If you use the refiner, the noise is added by the first KSampler, so that's wher
 - Added hijack nodes
 - Converted to factory 
 - Added Tiny Terra pipe KSampler (not fully functional for pipeKSamplerSDXL)
+
