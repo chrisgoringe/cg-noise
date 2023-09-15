@@ -14,7 +14,10 @@ def insert_variation_inputs(input_types):
         required[rkey] = input_types['required'][rkey]
         if rkey=="seed" or rkey=="noise_seed":
             required['variation_seed'] = ("INT", {"min": 0, "max": 0xffffffffffffffff})
-            required['variation_weight'] = ("FLOAT", {"default": 0.001, "min": 0, "max": 1, "step": 0.001})
+            required['variation_weight'] = ("FLOAT", {"default": 0.000, "min": 0, "max": 1, "step": 0.001})
+    if (not 'variation_seed' in required):
+        required['variation_seed'] = ("INT", {"min": 0, "max": 0xffffffffffffffff})
+        required['variation_weight'] = ("FLOAT", {"default": 0.000, "min": 0, "max": 1, "step": 0.001})
     input_types['required'] = required
     return input_types    
 

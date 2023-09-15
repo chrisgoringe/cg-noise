@@ -1,9 +1,6 @@
 from .noise import get_mixed_noise_function
 import comfy.sample
 
-class HijackException(Exception):
-    pass
-
 class Hijack():
     CATEGORY = "noise/hijack"
     FUNCTION = "func"
@@ -23,9 +20,9 @@ class Hijack():
     def func(cls, latent, variation_seed, variation_weight, trigger=None):
         if cls._original_noise_function==None:
             cls._original_noise_function = comfy.sample.prepare_noise
-            comfy.sample.prepare_noise = get_mixed_noise_function(cls._original_noise_function, variation_seed, variation_weight)
         else:
-            raise HijackException("comfy.sample.prepare_noise already replaced - perhaps you failed to UnHijack?")
+            print("In noise hijack, the noise function had already been hijacked - continuing, but this might be an error. Maybe you forgot to unhijack?")
+        comfy.sample.prepare_noise = get_mixed_noise_function(cls._original_noise_function, variation_seed, variation_weight)
         return (latent,)
     
 class UnHijack():
