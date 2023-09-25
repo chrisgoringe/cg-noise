@@ -39,16 +39,25 @@ original noise. The first image will have *variation_weight* of zero, the second
 
 ## Installation
 
+Use the [ComfyUI Manager](https://github.com/ltdrdata/ComfyUI-Manager) and search for chrisgoringe or variation.
+
+Manual install:
 ```
 cd [Comfy Install]/custom_nodes
 git clone https://github.com/chrisgoringe/cg-noise.git
+git clone https://github.com/chrisgoringe/cg-custom-core.git
 ```
 Then restart ComfyUI and reload the webpage.
 
 ## Update
 
+Use the [ComfyUI Manager](https://github.com/ltdrdata/ComfyUI-Manager)
+
+Manual:
 ```
 cd [Comfy Install]/custom_nodes/cg-noise
+git pull
+cd [Comfy Install]/custom_nodes/cg-custom-core
 git pull
 ```
 Then restart ComfyUI and reload the webpage.

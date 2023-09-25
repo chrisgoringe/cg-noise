@@ -45,7 +45,7 @@ class UnHijack():
     RETURN_TYPES = ("LATENT",)
     RETURN_NAMES = ("latent",)
 
-    def func(slef,latent):
+    def func(self,latent):
         if Hijack._original_noise_function:
             comfy.sample.prepare_noise = Hijack._original_noise_function
             Hijack._original_noise_function = None
