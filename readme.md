@@ -45,7 +45,7 @@ Manual install:
 ```
 cd [Comfy Install]/custom_nodes
 git clone https://github.com/chrisgoringe/cg-noise.git
-git clone https://github.com/chrisgoringe/cg-custom-core.git
+git clone https://github.com/chrisgoringe/cg-custom-core.git cg_custom_core
 ```
 Then restart ComfyUI and reload the webpage.
 
@@ -57,7 +57,7 @@ Manual:
 ```
 cd [Comfy Install]/custom_nodes/cg-noise
 git pull
-cd [Comfy Install]/custom_nodes/cg-custom-core
+cd [Comfy Install]/custom_nodes/cg_custom_core
 git pull
 ```
 Then restart ComfyUI and reload the webpage.
