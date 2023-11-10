@@ -44,6 +44,7 @@ class UnHijack():
         }
     RETURN_TYPES = ("LATENT",)
     RETURN_NAMES = ("latent",)
+    OUTPUT_NODE = True
 
     def func(self,latent):
         if Hijack._context:
