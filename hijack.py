@@ -18,6 +18,7 @@ class Hijack():
     RETURN_TYPES = ("LATENT",)
     RETURN_NAMES = ("latent",)
 
+    _context = None
     _hijack_node_id = None
 
     def func(self, latent, variation_seed, variation_weight, id):
