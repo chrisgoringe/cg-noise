@@ -1,7 +1,5 @@
-from .noise import get_mixed_noise_function
+from .noise_context import NoiseContext
 from custom_nodes.cg_custom_core.ui_decorator import ui_signal
-
-import comfy.sample
 
 @ui_signal('set_title_color')
 class Hijack():
@@ -12,23 +10,24 @@ class Hijack():
         return {
             "required" : {
                 "latent": ("LATENT", {}), 
-                "variation_seed":("INT", {"default": 0, "min": 0, "max": 0xffffffffffffffff}), 
-                "variation_weight": ("FLOAT", {"default": 0.001, "min": 0, "max": 1, "step": 0.001}) 
+                "variation_seed":("INT", {"default": 42, "min": 0, "max": 0xffffffffffffffff}), 
+                "variation_weight": ("FLOAT", {"default": 0.2, "min": 0, "max": 1, "step": 0.001}) 
             },
             "hidden" : { "id": "UNIQUE_ID" }
         }
     RETURN_TYPES = ("LATENT",)
     RETURN_NAMES = ("latent",)
-    _original_noise_function = None
+
     _hijack_node_id = None
 
     def func(self, latent, variation_seed, variation_weight, id):
-        if self._original_noise_function==None:
-            self._original_noise_function = comfy.sample.prepare_noise
+        if Hijack._context==None:
+            Hijack._hijack_node_id = id
+            Hijack._context = NoiseContext(variation_seed, variation_weight)
         else:
             print("In noise hijack, the noise function had already been hijacked - continuing, but this might be an error. Maybe you forgot to unhijack?")
-        comfy.sample.prepare_noise = get_mixed_noise_function(self._original_noise_function, variation_seed, variation_weight)
-        Hijack._hijack_node_id = id
+            return (latent,None)
+        Hijack._context.hijack()
         return (latent, (f"id={Hijack._hijack_node_id}", "red"))
 
 @ui_signal('set_title_color')  
@@ -46,10 +45,13 @@ class UnHijack():
     RETURN_NAMES = ("latent",)
 
     def func(self,latent):
-        if Hijack._original_noise_function:
-            comfy.sample.prepare_noise = Hijack._original_noise_function
-            Hijack._original_noise_function = None
-        return (latent,(f"id={Hijack._hijack_node_id}","reset"))
+        if Hijack._context:
+            Hijack._context.unhijack()
+            Hijack._context = None
+            return (latent,(f"id={Hijack._hijack_node_id}","reset"))
+        else:
+            print("In noise unhijack, the noise function wasn't hijacked - continuing, but this might be an error.")
+            return (latent,None)
     
 NODE_CLASS_MAPPINGS = {
     "Hijack" : Hijack, 

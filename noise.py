@@ -1,31 +1,16 @@
-import comfy.sample
+from .noise_context import NoiseContext
 from nodes import KSampler, KSamplerAdvanced
-import torch
-
-def get_mixed_noise_function(original_noise_function, variation_seed, variation_weight):
-    def prepare_mixed_noise(latent_image:torch.Tensor, seed, batch_inds):
-        single_image_latent = latent_image[0].unsqueeze_(0)
-        different_noise = original_noise_function(single_image_latent, variation_seed, batch_inds)
-        original_noise = original_noise_function(single_image_latent, seed, batch_inds)
-        if latent_image.shape[0]==1:
-            mixed_noise = original_noise * (1.0-variation_weight) + different_noise * (variation_weight)
-        else:
-            mixed_noise = torch.empty_like(latent_image)
-            for i in range(latent_image.shape[0]):
-                mixed_noise[i] = original_noise * (1.0-variation_weight*i) + different_noise * (variation_weight*i)
-        return mixed_noise
-    return prepare_mixed_noise
 
 def insert_variation_inputs(input_types):
     required = {}
     for rkey in input_types['required']:
         required[rkey] = input_types['required'][rkey]
         if rkey=="seed" or rkey=="noise_seed":
-            required['variation_seed'] = ("INT", {"min": 0, "max": 0xffffffffffffffff})
-            required['variation_weight'] = ("FLOAT", {"default": 0.000, "min": 0, "max": 1, "step": 0.001})
+            required['variation_seed'] = ("INT", {"default": 42, "min": 0, "max": 0xffffffffffffffff})
+            required['variation_weight'] = ("FLOAT", {"default": 0.200, "min": 0, "max": 1, "step": 0.001})
     if (not 'variation_seed' in required):
-        required['variation_seed'] = ("INT", {"min": 0, "max": 0xffffffffffffffff})
-        required['variation_weight'] = ("FLOAT", {"default": 0.000, "min": 0, "max": 1, "step": 0.001})
+        required['variation_seed'] = ("INT", {"default": 42, "min": 0, "max": 0xffffffffffffffff})
+        required['variation_weight'] = ("FLOAT", {"default": 0.200, "min": 0, "max": 1, "step": 0.001})
     input_types['required'] = required
     return input_types    
 
@@ -42,11 +27,8 @@ class Variations():
     def func(self, **kwargs):
         variation_seed = kwargs.pop('variation_seed')
         variation_weight = kwargs.pop('variation_weight')
-        original_noise_function = comfy.sample.prepare_noise
-        comfy.sample.prepare_noise = get_mixed_noise_function(original_noise_function, variation_seed, variation_weight)
-        results = getattr(self,self.clazz.FUNCTION)(**kwargs)
-        comfy.sample.prepare_noise = original_noise_function
-        return results
+        with NoiseContext(variation_seed, variation_weight):
+            return getattr(self,self.clazz.FUNCTION)(**kwargs)
     
 def variations_factory(original_class:type, name=None) -> type:
     name = name or original_class.__name__+"Variations"

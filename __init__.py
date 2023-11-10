@@ -1,17 +1,17 @@
 from .noise import NODE_CLASS_MAPPINGS as noise_mappings
 from .hijack import NODE_CLASS_MAPPINGS as hijack_mappings
-from .additional_samplers import NODE_CLASS_MAPPINGS as additional_mappings
 
 NODE_CLASS_MAPPINGS = {}
 for mappings in (
         noise_mappings,
         hijack_mappings, 
-        additional_mappings
     ):
     for mapping in mappings:
         NODE_CLASS_MAPPINGS[mapping] = mappings[mapping]
 
 __all__ = ['NODE_CLASS_MAPPINGS']
+
+VERSION = "1.1"
 
 import os, shutil
 import folder_paths
