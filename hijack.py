@@ -25,7 +25,7 @@ class Hijack():
             Hijack._context = NoiseContext(variation_seed, variation_weight)
         else:
             print("In noise hijack, the noise function had already been hijacked - continuing, but this might be an error. Maybe you forgot to unhijack?")
-            return (latent,None)
+            return (latent,)
         Hijack._context.hijack()
         return (latent, )
 
@@ -47,7 +47,7 @@ class UnHijack():
         if Hijack._context:
             Hijack._context.unhijack()
             Hijack._context = None
-            return (latent,(f"id={Hijack._hijack_node_id}","reset"))
+            return (latent,)
         else:
             print("In noise unhijack, the noise function wasn't hijacked - continuing, but this might be an error.")
             return (latent,)
