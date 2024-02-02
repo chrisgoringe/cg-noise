@@ -1,7 +1,5 @@
 from .noise_context import NoiseContext
-from custom_nodes.cg_custom_core.ui_decorator import ui_signal
 
-@ui_signal('set_title_color')
 class Hijack():
     CATEGORY = "noise/hijack"
     FUNCTION = "func"
@@ -29,9 +27,8 @@ class Hijack():
             print("In noise hijack, the noise function had already been hijacked - continuing, but this might be an error. Maybe you forgot to unhijack?")
             return (latent,None)
         Hijack._context.hijack()
-        return (latent, (f"id={Hijack._hijack_node_id}", "red"))
+        return (latent, )
 
-@ui_signal('set_title_color')  
 class UnHijack():
     CATEGORY = "noise/hijack"
     FUNCTION = "func"
@@ -53,7 +50,7 @@ class UnHijack():
             return (latent,(f"id={Hijack._hijack_node_id}","reset"))
         else:
             print("In noise unhijack, the noise function wasn't hijacked - continuing, but this might be an error.")
-            return (latent,None)
+            return (latent,)
     
 NODE_CLASS_MAPPINGS = {
     "Hijack" : Hijack, 
