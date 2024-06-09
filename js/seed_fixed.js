@@ -1,5 +1,5 @@
-import { app } from "../../../scripts/app.js";
-import { addValueControlWidget } from "../../../scripts/widgets.js";
+import { app } from "../../scripts/app.js";
+import { addValueControlWidget } from "../../scripts/widgets.js";
 
 app.registerExtension({
 	name: "cg.noise.seedFixed",
