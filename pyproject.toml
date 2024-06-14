@@ -1,0 +1,14 @@
+[project]
+name = "cg-noise"
+description = "Adds KSampler custom nodes with variation seed and variation strength."
+version = "1.0.0"
+license = "LICENSE"
+
+[project.urls]
+Repository = "https://github.com/chrisgoringe/cg-noise"
+#  Used by Comfy Registry https://comfyregistry.org
+
+[tool.comfy]
+PublisherId = ""
+DisplayName = "cg-noise"
+Icon = ""
