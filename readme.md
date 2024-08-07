@@ -1,6 +1,17 @@
 # KSamplers with variation seed (aka Noise Hijack)
 
 
+# This node pack is retired
+
+Thanks to noise being elevated to a proper datatype in Comfy, these nodes have been replaced with the much simpler, more flexible, and more reliable 
+[NoiseTools](https://github.com/chrisgoringe/cg-noisetools). Go get them there!
+
+
+# This node pack is retired - below is for historical interest only!
+
+
+
+
 Custom nodes that replace `KSampler` and `KSampler Advanced` (or hijack others - see below) and allow you to generate small variations in the initial noise.
 
 Conceptually, `noise = random_based_on(seed)` is replaced with `noise = random_based_on(variation_seed) * x + random_based_on(seed) * (1-x)` for some weight `x`. `x=0` generates an identical image to the normal nodes, small values of `x` generate similar images.
